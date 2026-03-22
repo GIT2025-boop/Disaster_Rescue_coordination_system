@@ -1,13 +1,6 @@
 #include "../include/common.h"
-#include <signal.h>
-#include <fcntl.h>
 
 mqd_t mq;
-
-void handle_sigusr1(int sig) {
-    printf("\nC2 received SIGUSR1 - Emergency Stop!\n");
-    exit(0);
-}
 
 void* receiver(void* arg) {
 
@@ -31,7 +24,7 @@ void* receiver(void* arg) {
 
         buffer[bytes] = '\0';
 
-        printf("C2 Received: %s\n", buffer);
+        printf("\n[C2 RESCUE COORDINATOR]\nReceived -> %s\n", buffer);
 
         int team;
 
@@ -47,7 +40,7 @@ void* receiver(void* arg) {
         snprintf(new_msg, MAX_MSG_SIZE,
                  "%.200s | Team Assigned: %d", buffer, team);
 
-        printf("Allocating Rescue Team %d...\n", team);
+        printf("Team Assigned -> %d\n", team);
 
         write(fd, new_msg, strlen(new_msg)+1);
 
@@ -57,13 +50,15 @@ void* receiver(void* arg) {
 
 int main() {
 
-    signal(SIGUSR1, handle_sigusr1);
-
     mq = mq_open(QUEUE_NAME, O_RDONLY);
+
+    if (mq < 0) {
+        perror("mq_open failed");
+        exit(1);
+    }
 
     pthread_t t1;
     pthread_create(&t1, NULL, receiver, NULL);
-
     pthread_join(t1, NULL);
 
     mq_close(mq);

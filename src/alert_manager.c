@@ -1,15 +1,7 @@
 #include "../include/common.h"
-#include <signal.h>
 #include <time.h>
 
 mqd_t mq;
-
-void handle_sigusr1(int sig) {
-    printf("\nC1 received SIGUSR1 - Emergency Stop!\n");
-    mq_close(mq);
-    mq_unlink(QUEUE_NAME);
-    exit(0);
-}
 
 void* sensor_simulator(void* arg) {
 
@@ -39,7 +31,7 @@ void* sensor_simulator(void* arg) {
             disaster_types[type], severity, zone
         );
 
-        printf("C1 Sent: %s\n", msg);
+        printf("\n[C1 ALERT MANAGER]\nGenerated -> %s\n", msg);
 
         mq_send(mq, msg, strlen(msg)+1, 0);
 
@@ -49,20 +41,24 @@ void* sensor_simulator(void* arg) {
 
 int main() {
 
-    signal(SIGUSR1, handle_sigusr1);
     srand(time(NULL));
 
-    struct mq_attr attr;
-    attr.mq_flags = 0;
+    struct mq_attr attr = {0};
     attr.mq_maxmsg = 10;
     attr.mq_msgsize = MAX_MSG_SIZE;
-    attr.mq_curmsgs = 0;
+
+    //  AUTO CLEAN OLD QUEUE
+    mq_unlink(QUEUE_NAME);
 
     mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0644, &attr);
 
+    if (mq < 0) {
+        perror("mq_open failed");
+        exit(1);
+    }
+
     pthread_t t1;
     pthread_create(&t1, NULL, sensor_simulator, NULL);
-
     pthread_join(t1, NULL);
 
     mq_close(mq);
