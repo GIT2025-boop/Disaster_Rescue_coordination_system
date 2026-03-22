@@ -27,11 +27,9 @@ void* sensor_simulator(void* arg) {
 
         sprintf(msg,
             "Disaster: %s | Severity: %s | Zone: %d",
-            disaster_types[type], severity, zone
+            disaster_types[type], severity, zone);
 
          mq_send(mq, msg, strlen(msg)+1, 0);
-
-        );
 
         printf("C1 Sent: %s\n", msg);
 
