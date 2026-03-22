@@ -1,73 +1,54 @@
 # 🚨 Disaster Rescue Coordination System
 
+---
+
 ## 📌 Project Description
 
-This project is a simulation-based system using Linux system calls and IPC mechanisms to manage disaster rescue operations. It demonstrates how multiple processes communicate and coordinate in real-time to handle disaster events.
+This project simulates a disaster rescue system using Linux system calls and IPC mechanisms. It demonstrates how multiple processes communicate and coordinate in real-time to handle disaster events and assign rescue teams based on severity and zone.
+
+---
 
 ## ⚙️ Features
 
 * Multi-process system (C1, C2, C3)
-* Multi-threading using pthreads
+* Multi-threading with pthreads
 * IPC mechanisms:
+  * Message Queue (C1 → C2)
+  * FIFO Pipe (C2 → C3)
+  * Shared Memory + Semaphore (C3 for stats)
+* Real-time disaster monitoring and logging
+* Signal Handling (SIGUSR1 triggers emergency snapshot)
 
-  * Message Queue
-  * FIFO Pipe
-  * Shared Memory + Semaphore
-* File logging and statistics tracking
-* Signal Handling (SIGUSR1 to trigger emergency snapshot)
-* Real-time disaster monitoring and team assignment
+---
 
-## 🧠 Modules
+## 🧠 Modules & Responsibilities
 
-* **C1: Alert & Risk Manager**
-* **C2: Rescue & Coordination**
-* **C3: Monitoring & Analytics**
+| Process                        | Threads                                        | Responsibilities                                                                                                                                                                  |
+| ------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **C1: Alert & Risk Manager**   | T1: Sensor Simulator<br>T2: Risk Calculator    | - Generates random disasters (Earthquake, Gas Leak, Building Collapse)<br>- Calculates severity (LOW, MEDIUM, HIGH)<br>- Sends alerts via Message Queue                           |
+| **C2: Rescue & Coordination**  | T1: Team Allocator<br>T2: Message Broadcaster  | - Receives alerts from C1<br>- Assigns rescue teams based on severity and zone<br>- Sends updates to Monitoring using FIFO                                                        |
+| **C3: Monitoring & Analytics** | T1: Stats Aggregator<br>T2: Emergency Reporter | - Receives disaster updates from C2<br>- Maintains and updates statistics: Total, HIGH, MEDIUM, LOW<br>- Responds to SIGUSR1 with emergency snapshot<br>- Logs monitoring details |
 
-## ⚙️ Processes Description
+---
 
-1. **C1 – Alert & Risk Manager**
+## 🔗 IPC & Linux System Calls
 
-   * Generates random disaster events 🎲
-   * Calculates severity (LOW, MEDIUM, HIGH)
-   * Sends alerts using 📩 Message Queue
+| Process | IPC / Linux Calls                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------------- |
+| **C1**  | `mq_send()`, `mq_receive()`, `rand()`, `pthread_create()`, `timer_create()`                                   |
+| **C2**  | `pthread_create()`, `pthread_mutex_lock/unlock()`, `write()/read()` (FIFO), `mq_send()`                       |
+| **C3**  | `shm_open()`, `mmap()`, `sem_init()`, `sem_wait()/sem_post()`, `open()/write()/close()`, `signal()` (SIGUSR1) |
 
-2. **C2 – Rescue & Coordination**
+---
 
-   * Receives alerts from C1
-   * Assigns rescue teams based on severity 🚑
-   * Sends updates using 📡 FIFO Pipe
-   * Prints only team assignment and disaster received (does not duplicate stats)
-
-3. **C3 – Monitoring & Analytics**
-
-   * Receives data from C2
-   * Maintains statistics: Total disasters, HIGH, MEDIUM, LOW counts 💾
-   * Updates stats in real-time without printing duplicate C2 messages
-   * Uses 🔒 Semaphore for synchronization
-   * Stores logs in 📁 files
-   * Responds to SIGUSR1 with emergency snapshot (🚨 EMERGENCY SNAPSHOT)
-
-## 🔗 IPC Mechanisms Used
-
-* **C1 → C2** : 📩 Message Queue
-* **C2 → C3** : 📡 FIFO (Named Pipe)
-* **C3** : 💾 Shared Memory + 🔒 Semaphore
-
-## 🛠️ System Calls Used
-
-* `fork()`, `exec()`
-* `pthread_create()`
-* `mq_send()`, `mq_receive()`
-* `open()`, `read()`, `write()`
-* `shm_open()`, `mmap()`
-* `sem_wait()`, `sem_post()`
-* `signal()` to handle SIGUSR1
-
-## ▶️ How to Run
+## 🛠️ How to Run
 
 ```bash
+make all
 ./build/main
 ```
+
+---
 
 ## 📊 Sample Output
 
@@ -77,21 +58,29 @@ This project is a simulation-based system using Linux system calls and IPC mecha
 [CONTROL CENTER RUNNING]
 
 [C1 ALERT MANAGER]
-Generated -> Disaster: Gas Leak | Severity: MEDIUM | Zone: 3
+Generated -> Disaster: Earthquake | Severity: HIGH | Zone: 3
 
 [C2 RESCUE COORDINATOR]
-Received -> Disaster: Gas Leak | Severity: MEDIUM | Zone: 3
+Received -> Disaster: Earthquake | Severity: HIGH | Zone: 3
 Team Assigned -> 1
 
 [C3 MONITORING]
-Stats Updated -> Total: 1 | HIGH: 0 | MEDIUM: 1 | LOW: 0
+Monitoring -> Disaster: Earthquake | Severity: HIGH | Zone: 3 | Team Assigned: 1
+
+...
+
+[STATS] Total = 5
 
 [CONTROL] Sending SIGUSR1 to Monitoring...
 
+[CONTROL CENTER RUNNING]
+
 🚨 EMERGENCY SNAPSHOT (SIGUSR1) 🚨
-Total: 1
-HIGH: 0 | MEDIUM: 1 | LOW: 0
+Total: 5
+HIGH: 2 | MEDIUM: 2 | LOW: 1
 ```
+
+---
 
 ## 👩‍💻 Author
 
