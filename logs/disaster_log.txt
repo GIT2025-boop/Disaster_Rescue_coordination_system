@@ -1,0 +1,10 @@
+[Sat Mar 21 23:49:22 2026
+] Disaster: Building Collapse | Severity: LOW | Zone: 2 | Team Assigned: 3
+[Sat Mar 21 23:49:24 2026
+] Disaster: Fire | Severity: MEDIUM | Zone: 4 | Team Assigned: 2
+[Sat Mar 21 23:49:26 2026
+] Disaster: Flood | Severity: MEDIUM | Zone: 2 | Team Assigned: 2
+[Sat Mar 21 23:49:28 2026
+] Disaster: Flood | Severity: MEDIUM | Zone: 4 | Team Assigned: 2
+[Sat Mar 21 23:49:30 2026
+] Disaster: Fire | Severity: HIGH | Zone: 4 | Team Assigned: 1
