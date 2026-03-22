@@ -1,7 +1,16 @@
 #include "../include/common.h"
-#include <mqueue.h>
-#include <time.h> // at the top
+#include <signal.h>
+#include <time.h>
+
 mqd_t mq;
+
+void handle_sigusr1(int sig) {
+    printf("\nC1 received SIGUSR1 - Emergency Stop!\n");
+    mq_close(mq);
+    mq_unlink(QUEUE_NAME);
+    exit(0);
+}
+
 void* sensor_simulator(void* arg) {
 
     char* disaster_types[] = {
@@ -27,9 +36,8 @@ void* sensor_simulator(void* arg) {
 
         sprintf(msg,
             "Disaster: %s | Severity: %s | Zone: %d",
-            disaster_types[type], severity, zone);
-
-         mq_send(mq, msg, strlen(msg)+1, 0);
+            disaster_types[type], severity, zone
+        );
 
         printf("C1 Sent: %s\n", msg);
 
@@ -38,8 +46,10 @@ void* sensor_simulator(void* arg) {
         sleep(2);
     }
 }
+
 int main() {
 
+    signal(SIGUSR1, handle_sigusr1);
     srand(time(NULL));
 
     struct mq_attr attr;
@@ -56,7 +66,7 @@ int main() {
     pthread_join(t1, NULL);
 
     mq_close(mq);
-    mq_unlink("/disaster_queue");
+    mq_unlink(QUEUE_NAME);
 
     return 0;
 }

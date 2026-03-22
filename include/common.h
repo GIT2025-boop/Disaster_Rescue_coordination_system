@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <signal.h>
 
 #define QUEUE_NAME "/disaster_queue"
 #define MAX_MSG_SIZE 256
