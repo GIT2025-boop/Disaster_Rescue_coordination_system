@@ -1,5 +1,6 @@
 #include "../include/common.h"
 #include <mqueue.h>
+#include <time.h> // at the top
 mqd_t mq;
 void* sensor_simulator(void* arg) {
 
@@ -27,6 +28,9 @@ void* sensor_simulator(void* arg) {
         sprintf(msg,
             "Disaster: %s | Severity: %s | Zone: %d",
             disaster_types[type], severity, zone
+
+         mq_send(mq, msg, strlen(msg)+1, 0);
+
         );
 
         printf("C1 Sent: %s\n", msg);
@@ -37,6 +41,8 @@ void* sensor_simulator(void* arg) {
     }
 }
 int main() {
+
+    srand(time(NULL));
 
     struct mq_attr attr;
     attr.mq_flags = 0;

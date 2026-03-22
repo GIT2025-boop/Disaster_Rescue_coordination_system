@@ -7,40 +7,10 @@ This project simulates a **Disaster Rescue Coordination System** using Linux sys
 ---
 
 ## 🧠 System Architecture
-    +----------------------+
-    |   Control Center     |
-    |      (Parent)        |
-    +----------+-----------+
-               |
- -----------------------------------
- |                |                |
-+---------+ +---------+ +---------+
-| C1 | | C2 | | C3 |
-| Alert | --> | Rescue | --> | Monitor |
-| Manager | MQ | Coord | FIFO| & Stats |
-+---------+ +---------+ +---------+
-|
-Shared Memory
-|
-Logs/File
 
 ## 🔄 Data Flow Diagram
 
 ---
-
-C1 (Sensor Simulation)
-↓
-Message Queue (mq_send)
-↓
-C2 (Team Allocation)
-↓
-FIFO Pipe (write)
-↓
-C3 (Monitoring & Analytics)
-↓
-Shared Memory + Semaphore
-↓
-Logs + Stats Snapshot
 
 ---
 
@@ -97,18 +67,11 @@ Logs + Stats Snapshot
 ---
 
 ## 📂 Folder Structure
-disaster_rescue_system/
-├── src/ # Source files
-├── include/ # Header files
-├── build/ # Executables
-├── logs/ # Log files
-└── data/ # Output data
 
 ---
 
 ## ▶️ How to Run
 
-```bash
 make all
 ./build/main
 
