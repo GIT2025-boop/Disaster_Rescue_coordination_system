@@ -66,13 +66,12 @@ This project is a simulation-based system using Linux system calls and IPC mecha
 - sem_wait(), sem_post()
 
 ---
-
 ## ▶️ How to Run
 
 ```bash
 make all
-./build/main 
-
+./build/main
+```
 ---
 
 ## 📊 Sample Output
@@ -90,5 +89,4 @@ Updating Stats 📊
 Mrudula Bhandurge
 
 ---
-
 
