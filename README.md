@@ -28,7 +28,7 @@ This project is a simulation-based system using Linux system calls and IPC mecha
 
 ## ⚙️ Processes Description
 
-###1. C1 – Alert & Risk Manager
+### 1. C1 – Alert & Risk Manager
 
 * Generates random disaster events 🎲
 * Calculates severity (LOW, MEDIUM, HIGH)
@@ -76,11 +76,11 @@ make all
 
 ## 📊 Sample Output
 
-C1 Sent: Disaster: Fire | Severity: HIGH | Zone: 3 🔥
+C1 Sent: Disaster: Fire | Severity: HIGH | Zone: 3 
 C2 Received: Disaster: Fire | Severity: HIGH | Zone: 3
-Allocating Rescue Team 1 🚑
+Allocating Rescue Team 1 
 C3 Monitoring: Disaster: Fire | Severity: HIGH | Zone: 3 | Team Assigned: 1
-Updating Stats 📊
+Updating Stats 
 
 ---
 
