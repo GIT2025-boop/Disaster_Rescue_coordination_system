@@ -21,13 +21,42 @@ This project simulates a disaster rescue system using Linux system calls and IPC
 
 ---
 
+## 🎯 Scenario
+
+In real-world systems (IoT / Smart Cities / Industrial Monitoring), disasters like:
+- Fire
+- Flood
+- Gas Leak
+- Earthquake
+
+must be detected and handled immediately.
+
+This system:
+1. Generates disaster events
+2. Assigns rescue teams based on severity
+3. Monitors and logs all activities
+4. Maintains real-time statistics
+
+---
+
+## 🔄 Data Flow
+
+```
+
+C1 (Message Queue) → C2 (FIFO Pipe) → C3 (Shared Memory + Logs)
+
+```
+
+---
+
 ## 🧠 Modules & Responsibilities
 
-| Process                        | Threads                                        | Responsibilities                                                                                                                                                                  |
-| ------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **C1: Alert & Risk Manager**   | T1: Sensor Simulator<br>T2: Risk Calculator    | - Generates random disasters (Earthquake, Gas Leak, Building Collapse)<br>- Calculates severity (LOW, MEDIUM, HIGH)<br>- Sends alerts via Message Queue                           |
-| **C2: Rescue & Coordination**  | T1: Team Allocator<br>T2: Message Broadcaster  | - Receives alerts from C1<br>- Assigns rescue teams based on severity and zone<br>- Sends updates to Monitoring using FIFO                                                        |
-| **C3: Monitoring & Analytics** | T1: Stats Aggregator<br>T2: Emergency Reporter | - Receives disaster updates from C2<br>- Maintains and updates statistics: Total, HIGH, MEDIUM, LOW<br>- Responds to SIGUSR1 with emergency snapshot<br>- Logs monitoring details |
+| Process                        | Threads                           | Responsibilities                                                                                                                                                                                 |
+| ------------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **C1: Alert & Risk Manager**   | **T1: Sensor Simulator**          | - Generates random disaster events (Fire, Flood, Earthquake, Gas Leak, Building Collapse)<br>- Assigns severity (LOW, MEDIUM, HIGH)<br>- Sends alerts to C2 using **Message Queue**              |
+| **C2: Rescue & Coordination**  | **T1: Receiver & Team Allocator** | - Receives disaster alerts from C1<br>- Assigns rescue teams based on severity (HIGH→1, MEDIUM→2, LOW→3)<br>- Forwards updated message to C3 using **FIFO (Named Pipe)**                         |
+| **C3: Monitoring & Analytics** | **T1: Stats Monitor**             | - Receives updates from C2<br>- Maintains statistics (Total, HIGH, MEDIUM, LOW, Zone-wise)<br>- Displays real-time monitoring output with timestamp<br>- Detects critical alerts (HIGH priority) |
+| **C3 (Signal Handler)**        | **T2: Emergency Reporter**        | - Handles **SIGUSR1** signal<br>- Generates emergency snapshot<br>- Saves statistics to file (`stats_snapshot.txt`)                                                                              |
 
 ---
 
@@ -41,50 +70,117 @@ This project simulates a disaster rescue system using Linux system calls and IPC
 
 ---
 
-## 🛠️ How to Run
+## 🔔 Signals Used
+
+| Signal          | Function                    |
+| --------------- | --------------------------- |
+| SIGUSR1         | Generate emergency snapshot |
+| SIGINT (Ctrl+C) | Cleanup resources           |
+
+---
+
+## 📂 Project Structure
+
+```
+
+disaster_rescue_system/
+│
+├── src/
+│   ├── alert_manager.c
+│   ├── rescue_coord.c
+│   ├── monitoring.c
+│   └── control_center.c
+│
+├── include/
+│   └── common.h
+│
+├── build/
+│   ├── c1
+│   ├── c2
+│   ├── c3
+│   └── control
+│
+├── logs/
+│   └── disaster_log.txt
+│
+├── data/
+│   └── stats_snapshot.txt
+│
+└── README.md
+
+````
+
+---
+
+## 🛠️ Compilation
 
 ```bash
-make all
-./build/main
+gcc src/alert_manager.c -o build/c1 -lpthread -lrt
+gcc src/rescue_coord.c -o build/c2 -lpthread -lrt
+gcc src/monitoring.c -o build/c3 -lpthread
+gcc src/control_center.c -o build/control -lrt
+````
+
+---
+
+## ▶️ Execution
+
+```bash
+./build/control
 ```
 
 ---
 
 ## 📊 Sample Output
 
-```text
-===== DISASTER RESCUE CONTROL CENTER =====
-
-[CONTROL CENTER RUNNING]
-
+```
 [C1 ALERT MANAGER]
-Generated -> Disaster: Earthquake | Severity: HIGH | Zone: 3
+Generated -> Disaster: Fire | Severity: HIGH | Zone: 2
 
 [C2 RESCUE COORDINATOR]
-Received -> Disaster: Earthquake | Severity: HIGH | Zone: 3
+Received -> ...
 Team Assigned -> 1
 
 [C3 MONITORING]
-Monitoring -> Disaster: Earthquake | Severity: HIGH | Zone: 3 | Team Assigned: 1
-
-...
-
-[STATS] Total = 5
-
-[CONTROL] Sending SIGUSR1 to Monitoring...
-
-[CONTROL CENTER RUNNING]
+Monitoring -> ...
 
 🚨 EMERGENCY SNAPSHOT (SIGUSR1) 🚨
-Total: 5
-HIGH: 2 | MEDIUM: 2 | LOW: 1
+Total: 10
+HIGH: 5 | MEDIUM: 3 | LOW: 2
 ```
+
+---
+
+## 📁 Log File Example
+
+```
+Disaster: Fire | Severity: HIGH | Zone: 2 | Team Assigned: 1
+```
+
+---
+
+## 🧪 Key Learning Outcomes
+
+* Process creation using `fork()`
+* Thread synchronization using semaphores
+* IPC mechanisms integration
+* Signal handling
+* Real-time system simulation
+
+---
+
+## 🚀 Future Improvements
+
+* GUI dashboard
+* Network-based communication (sockets)
+* Database integration
+* AI-based risk prediction
 
 ---
 
 ## 👩‍💻 Author
 
 **Mrudula Bhandurge**
+TE Electronics & Telecommunication
 
 ---
-
