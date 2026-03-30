@@ -35,7 +35,7 @@ void* sensor_simulator(void* arg) {
 
         mq_send(mq, msg, strlen(msg)+1, 0);
 
-        sleep(2);
+        sleep(4);
     }
 }
 
@@ -47,7 +47,6 @@ int main() {
     attr.mq_maxmsg = 10;
     attr.mq_msgsize = MAX_MSG_SIZE;
 
-    //  AUTO CLEAN OLD QUEUE
     mq_unlink(QUEUE_NAME);
 
     mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0644, &attr);

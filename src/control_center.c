@@ -28,9 +28,7 @@ int main() {
     printf("===== DISASTER RESCUE CONTROL CENTER =====\n");
 
     unlink("/tmp/rescue_pipe");
-    if (mkfifo("/tmp/rescue_pipe", 0666) < 0) {
-        perror("mkfifo failed");
-    }
+    mkfifo("/tmp/rescue_pipe", 0666);
 
     p1 = fork();
     if (p1 == 0)

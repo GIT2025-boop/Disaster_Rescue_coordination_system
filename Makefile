@@ -1,20 +1,28 @@
 CC = gcc
-CFLAGS = -Wall -pthread -lrt
+CFLAGS = -Wall -lrt -lpthread
+
+SRC = src
 BUILD = build
 
-all: main alert_manager rescue_coord monitoring
+all: $(BUILD)/c1 $(BUILD)/c2 $(BUILD)/c3 $(BUILD)/control
 
-main:
-	$(CC) $(CFLAGS) src/main.c -o $(BUILD)/main
+$(BUILD)/c1: $(SRC)/alert_manager.c
+	mkdir -p $(BUILD)
+	$(CC) $< -o $@ $(CFLAGS)
 
-alert_manager:
-	$(CC) $(CFLAGS) src/alert_manager.c -o $(BUILD)/alert_manager
+$(BUILD)/c2: $(SRC)/rescue_coord.c
+	mkdir -p $(BUILD)
+	$(CC) $< -o $@ $(CFLAGS)
 
-rescue_coord:
-	$(CC) $(CFLAGS) src/rescue_coord.c -o $(BUILD)/rescue_coord
+$(BUILD)/c3: $(SRC)/monitoring.c
+	mkdir -p $(BUILD)
+	$(CC) $< -o $@ $(CFLAGS)
 
-monitoring:
-	$(CC) $(CFLAGS) src/monitoring.c -o $(BUILD)/monitoring
+$(BUILD)/control: $(SRC)/control_center.c
+	mkdir -p $(BUILD)
+	$(CC) $< -o $@ $(CFLAGS)
 
 clean:
-	rm -f $(BUILD)/*
+	rm -rf $(BUILD)
+	rm -f /tmp/rescue_pipe
+	rm -f /dev/mqueue/disaster_queue

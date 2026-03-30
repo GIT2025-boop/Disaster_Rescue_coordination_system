@@ -44,7 +44,7 @@ void* receiver(void* arg) {
 
         write(fd, new_msg, strlen(new_msg)+1);
 
-        sleep(2);
+        sleep(3);
     }
 }
 
