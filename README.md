@@ -168,6 +168,6 @@ HIGH: 5 | MEDIUM: 3 | LOW: 2
 ## 👩‍💻 Author
 
 **Mrudula Bhandurge**
-- TE Electronics & Telecommunication
+TE Electronics & Telecommunication
 
 ---
