@@ -44,11 +44,6 @@ This system:
 <img width="1536" height="1024" alt="diagram png" src="https://github.com/user-attachments/assets/6aa93438-2629-4e58-8338-8bc28130e37e" />
 
 ---
-## 🔄 Data Flow
-
-C1 (Message Queue) → C2 (FIFO Pipe) → C3 (Shared Memory + Logs)
-
----
 
 ## 🧠 Modules & Responsibilities
 
