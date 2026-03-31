@@ -42,7 +42,7 @@ This system:
 ## 🔄 Data Flow
 
 ```
-
+![diagram](https://github.com/your-username/your-repo/assets/xxxxx/diagram.png)
 C1 (Message Queue) → C2 (FIFO Pipe) → C3 (Shared Memory + Logs)
 
 ```
