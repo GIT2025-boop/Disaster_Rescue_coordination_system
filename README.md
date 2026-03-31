@@ -144,15 +144,6 @@ Monitoring -> ...
 Total: 10
 HIGH: 5 | MEDIUM: 3 | LOW: 2
 ```
-
----
-
-## 📁 Log File Example
-
-```
-Disaster: Fire | Severity: HIGH | Zone: 2 | Team Assigned: 1
-```
-
 ---
 
 ## 🧪 Key Learning Outcomes
@@ -177,6 +168,6 @@ Disaster: Fire | Severity: HIGH | Zone: 2 | Team Assigned: 1
 ## 👩‍💻 Author
 
 **Mrudula Bhandurge**
-TE Electronics & Telecommunication
+- TE Electronics & Telecommunication
 
 ---
