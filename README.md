@@ -39,6 +39,11 @@ This system:
 
 ---
 
+## 📊 System Architecture
+
+![System Diagram](images/diagram.png)
+
+---
 ## 🔄 Data Flow
 
 ```
