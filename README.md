@@ -46,11 +46,7 @@ This system:
 ---
 ## 🔄 Data Flow
 
-```
-
 C1 (Message Queue) → C2 (FIFO Pipe) → C3 (Shared Memory + Logs)
-
-```
 
 ---
 
